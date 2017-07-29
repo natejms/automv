@@ -1,0 +1,6 @@
+[package]
+name = "file-watch"
+version = "0.1.0"
+authors = ["natejms <natejms@outlook.com>"]
+
+[dependencies]
