@@ -21,7 +21,6 @@ fn main() {
     if !quiet { println!("Starting loop.") }
 
     loop {
-
         let file_paths = match fs::read_dir(&path) {
             Ok(paths) => paths,
             Err(e) => {
@@ -41,9 +40,11 @@ fn main() {
                 }
             };
 
+            if f.path().is_dir() { continue }
+
             match fs::copy(&f.path(), &dest.join(&f.file_name())) {
-                Ok(bytes) => {
-                    if !quiet { println!("Copied {:?}: {} bytes", f.path(), bytes) }
+                Ok(bytes) => if !quiet {
+                    println!("Copied {:?}: {} bytes", f.path(), bytes)
                 },
                 Err(e) => {
                     println!("Couldn't copy file {:?}: {:?}", f.path(), get_error_msg(e));
@@ -52,8 +53,8 @@ fn main() {
             }
 
             match fs::remove_file(f.path()) {
-                Ok(_) => {
-                    if !quiet { println!("Removing copied file {:?}", f.path()) }
+                Ok(_) => if !quiet {
+                    println!("Removing copied file {:?}", f.path())
                 },
                 Err(e) => {
                     println!("Couldn't remove file {:?}: {:?}", f.path(), get_error_msg(e))
