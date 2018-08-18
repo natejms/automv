@@ -18,7 +18,9 @@ fn main() {
                 let file_paths = match fs::read_dir(&path) {
                     Ok(paths) => paths,
                     Err(e) => {
-                        println!("Failed to read source directoyr: {:?}", e);
+                        println!("Failed to read source directoy:\n{:?}", e);
+                        thread::sleep(time::Duration::from_secs(5));
+
                         continue;
                     }
                 };
@@ -33,16 +35,16 @@ fn main() {
                     };
 
                     match fs::copy(&f.path(), &dest.join(&f.file_name())) {
-                        Ok(bytes) => println!("Copied {:?}: {} bytes", f, bytes),
+                        Ok(bytes) => println!("Copied {:?}: {} bytes", f.path(), bytes),
                         Err(e) => {
-                            println!("Couldn't copy file {:?}: {:?}", f, e);
+                            println!("Couldn't copy file {:?}: {:?}", f.path(), e);
                             continue;
                         }
                     }
 
                     match fs::remove_file(f.path()) {
-                        Ok(_) => println!("Removing copied file {:?}", f),
-                        Err(e) => println!("Couldn't remove file {:?}: {:?}", f, e)
+                        Ok(_) => println!("Removing copied file {:?}", f.path()),
+                        Err(e) => println!("Couldn't remove file {:?}: {:?}", f.path(), e)
                     }
                 }
 
