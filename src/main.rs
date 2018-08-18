@@ -17,33 +17,35 @@ fn main() {
             println!(" ---------------");
             println!("Starting loop.");
             loop {
-                match fs::read_dir(&path) {
-                    Ok(file_paths) => {
-                        for file in file_paths {
-                            match file {
-                                Ok(f) => {
-                                    match fs::copy(&f.path(), &dest.join(&f.file_name())) {
-                                        Ok(bytes) => println!("Copied {:?}: {} bytes", f, bytes),
-                                        Err(e) => {
-                                            println!("Couldn't copy file {:?}: {:?}", f, e);
-                                            continue;
-                                        }
-                                    }
 
-                                    #[allow(unused_variables)]
-                                    match fs::remove_file(f.path()) {
-                                        Ok(t) => println!("Removing copied file {:?}", f),
-                                        Err(e) => println!("Couldn't remove file {:?}: {:?}", f, e)
-                                    }
-                                },
-                                Err(e) => {
-                                    println!("Failed to read file: {:?}", e);
-                                }
-                            }
-                        }
-                    },
+                let file_paths = match fs::read_dir(&path) {
+                    Ok(paths) => paths,
                     Err(e) => {
                         println!("Failed to read source directoyr: {:?}", e);
+                        continue;
+                    }
+                };
+
+                for file in file_paths {
+                    let f = match file {
+                        Ok(f) => f,
+                        Err(e) => {
+                            println!("Failed to read file: {:?}", e);
+                            continue;
+                        }
+                    };
+
+                    match fs::copy(&f.path(), &dest.join(&f.file_name())) {
+                        Ok(bytes) => println!("Copied {:?}: {} bytes", f, bytes),
+                        Err(e) => {
+                            println!("Couldn't copy file {:?}: {:?}", f, e);
+                            continue;
+                        }
+                    }
+
+                    match fs::remove_file(f.path()) {
+                        Ok(_) => println!("Removing copied file {:?}", f),
+                        Err(e) => println!("Couldn't remove file {:?}: {:?}", f, e)
                     }
                 }
 
