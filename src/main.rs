@@ -25,7 +25,7 @@ fn main() {
         let file_paths = match fs::read_dir(&path) {
             Ok(paths) => paths,
             Err(e) => {
-                println!("Failed to read source directoy:\n{:?}", e);
+                println!("Failed to read source directoy:\n{:?}", get_error_msg(e));
                 thread::sleep(time::Duration::from_secs(5));
 
                 continue;
@@ -36,7 +36,7 @@ fn main() {
             let f = match file {
                 Ok(f) => f,
                 Err(e) => {
-                    println!("Failed to read file: {:?}", e);
+                    println!("Failed to read file: {:?}", get_error_msg(e));
                     continue;
                 }
             };
@@ -46,7 +46,7 @@ fn main() {
                     if !quiet { println!("Copied {:?}: {} bytes", f.path(), bytes) }
                 },
                 Err(e) => {
-                    println!("Couldn't copy file {:?}: {:?}", f.path(), e);
+                    println!("Couldn't copy file {:?}: {:?}", f.path(), get_error_msg(e));
                     continue;
                 }
             }
@@ -56,11 +56,18 @@ fn main() {
                     if !quiet { println!("Removing copied file {:?}", f.path()) }
                 },
                 Err(e) => {
-                    println!("Couldn't remove file {:?}: {:?}", f.path(), e)
+                    println!("Couldn't remove file {:?}: {:?}", f.path(), get_error_msg(e))
                 }
             }
         }
 
         thread::sleep(time::Duration::from_secs(5));
+    }
+}
+
+fn get_error_msg(e: std::io::Error) -> String {
+    match e.into_inner() {
+        Some(msg) => format!("{}", msg),
+        None => "No error message provided".to_string()
     }
 }
