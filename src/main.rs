@@ -11,11 +11,8 @@ fn main() {
             let path = Path::new(&args[1]);
             let dest = Path::new(&args[2]);
 
-            println!(" ---------------");
-            println!("- file-watch.rs -");
-            println!("-    ~natejms   -");
-            println!(" ---------------");
             println!("Starting loop.");
+
             loop {
 
                 let file_paths = match fs::read_dir(&path) {
@@ -49,15 +46,10 @@ fn main() {
                     }
                 }
 
-
-                println!("Waiting for more files...");
                 thread::sleep(time::Duration::from_secs(5));
             }
         },
         _ => {
-            println!(" ---------------");
-            println!("- file-watch.rs -");
-            println!(" ---------------");
             println!("Automatically move new files added to a directory to the specified destination.\n");
             println!("Syntax: file-watch <source> <destination>");
         }
