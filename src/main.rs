@@ -6,7 +6,7 @@ fn main() {
 
     if args.len() < 3 {
         println!("Automatically move new files added to a directory to the destination.\n");
-        println!("Syntax: file-watch <source> <destination>\n");
+        println!("Syntax: automv <source> <destination>\n");
 
         println!("Error: Missing arguments\n");
 

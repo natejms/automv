@@ -1,5 +1,5 @@
 [package]
-name = "file-watch"
+name = "automv"
 version = "0.1.0"
 authors = ["natejms <natejms@outlook.com>"]
 
